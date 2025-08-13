@@ -248,31 +248,7 @@ export default function UtilizeEcosystem() {
                   <CardTitle className="text-base">Interactive Ecosystem Map</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="min-h-[360px] h-[60vh] sm:h-[560px] rounded-xl border">
-                    <ReactFlow
-                      nodes={nodes}
-                      edges={edges}
-                      fitView
-                      fitViewOptions={{ padding: 0.2 }}
-                      snapToGrid
-                      snapGrid={[16, 16]}
-                      minZoom={0.3}
-                      maxZoom={1.75}
-                      defaultEdgeOptions={{
-                        type: 'smoothstep',
-                        style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
-                        labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 13, fontWeight: 600 },
-                        labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
-                        labelBgPadding: [6, 3],
-                        labelBgBorderRadius: 6,
-                        markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18 },
-                      }}
-                    >
-                      <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
-                      <MiniMap pannable zoomable style={{ height: 120, width: 180, borderRadius: 12, opacity: 0.9 }} />
-                      <Controls position="bottom-left" />
-                    </ReactFlow>
-                  </div>
+                  <FlowCanvas nodes={nodes} edges={edges} />
                 </CardContent>
               </Card>
 
@@ -407,31 +383,7 @@ export default function UtilizeEcosystem() {
                   <SectionTitle icon={ShieldCheck} title="Agentic CRA — Reference Architecture" subtitle="Front‑end like TazWorks; back‑end adjudication with rules + HIL" />
                 </CardHeader>
                 <CardContent>
-                  <div className="min-h-[320px] h-[55vh] sm:h-[520px] rounded-xl border">
-                    <ReactFlow
-                      nodes={craLayoutNodes}
-                      edges={craLayoutEdges}
-                      fitView
-                      minZoom={0.4}
-                      maxZoom={1.75}
-                      snapToGrid
-                      snapGrid={[16, 16]}
-                      fitViewOptions={{ padding: 0.2 }}
-                      defaultEdgeOptions={{
-                        type: 'smoothstep',
-                        style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
-                        labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 13, fontWeight: 600 },
-                        labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
-                        labelBgPadding: [6, 3],
-                        labelBgBorderRadius: 6,
-                        markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18 },
-                      }}
-                    >
-                      <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
-                      <MiniMap pannable zoomable style={{ height: 120, width: 180, borderRadius: 12, opacity: 0.9 }} />
-                      <Controls position="bottom-left" />
-                    </ReactFlow>
-                  </div>
+                  <FlowCanvas nodes={craLayoutNodes} edges={craLayoutEdges} />
                 </CardContent>
               </Card>
 
@@ -457,6 +409,38 @@ export default function UtilizeEcosystem() {
         </Tabs>
       </div>
     </TooltipProvider>
+  );
+}
+
+// ======= Styles =======
+type FlowCanvasProps = { nodes: FlowNode<{ label: string }>[]; edges: FlowEdge[] };
+function FlowCanvas({ nodes, edges }: FlowCanvasProps) {
+  return (
+    <div className="min-h-[360px] h-[60vh] sm:h-[560px] rounded-xl border">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        fitView
+        fitViewOptions={{ padding: 0.2 }}
+        snapToGrid
+        snapGrid={[16, 16]}
+        minZoom={0.3}
+        maxZoom={1.75}
+        defaultEdgeOptions={{
+          type: 'smoothstep',
+          style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
+          labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 13, fontWeight: 600 },
+          labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
+          labelBgPadding: [6, 3],
+          labelBgBorderRadius: 6,
+          markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18 },
+        }}
+      >
+        <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
+        <MiniMap pannable zoomable style={{ height: 120, width: 180, borderRadius: 12, opacity: 0.9 }} />
+        <Controls position="bottom-left" />
+      </ReactFlow>
+    </div>
   );
 }
 
