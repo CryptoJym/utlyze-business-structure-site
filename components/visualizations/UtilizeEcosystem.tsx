@@ -119,6 +119,8 @@ export default function UtilizeEcosystem() {
           { id: "croone", position: { x: 880, y: 240 }, data: { label: "CRO of One\n(Lead Gen + Outreach)" }, style: exampleStyle },
           { id: "cfoone", position: { x: 1040, y: 460 }, data: { label: "CFO of One\n(FinOps)" }, style: exampleStyle },
           { id: "institute", position: { x: 840, y: 460 }, data: { label: "Institute of One\n(Research Agents)" }, style: exampleStyle },
+          { id: "sidekick", position: { x: 980, y: 300 }, data: { label: "Sidekick\n(Deal Broker System)" }, style: exampleStyle },
+          { id: "researchsys", position: { x: 760, y: 60 }, data: { label: "Deep Research System\n(24/7 trusted research)" }, style: exampleStyle },
         ]
       : [];
 
@@ -154,6 +156,10 @@ export default function UtilizeEcosystem() {
           { id: "e-products-cfoone", source: "products", target: "cfoone", label: "Module", animated: false },
           { id: "e-products-institute", source: "products", target: "institute", label: "Module", animated: false },
           { id: "e-veiled-creator", source: "veiled", target: "creator", label: "Marketing Engine", animated: false },
+          { id: "e-products-sidekick", source: "products", target: "sidekick", label: "Product", animated: false },
+          { id: "e-rnd-research", source: "rnd", target: "researchsys", label: "Prototype", animated: false },
+          { id: "e-research-lib", source: "researchsys", target: "library", label: "Harvest patterns", animated: false },
+          { id: "e-vuplicity-lib", source: "vuplicity", target: "library", label: "Reusable components", animated: false },
         ]
       : [];
 
@@ -253,18 +259,27 @@ export default function UtilizeEcosystem() {
                   <div className="space-y-4 text-sm text-muted-foreground">
                     <div>
                       <h4 className="mb-1 font-semibold text-foreground">How it works</h4>
-                      <p>The center coordinates four pillars (Transformations, Products, Ventures, R&amp;D) that are built on a shared platform (orchestration, library, compliance). Enablers add leverage (OSS, operators, capital, data). Edges show direction of work/value; enable economics to see capture points.</p>
+                      <p>The center coordinates four pillars (Transformations, Products, Ventures, R&amp;D) on a shared platform (orchestration, library, compliance). Enablers add leverage (OSS, operators, capital, data). Edges show direction of work/value; enable economics to see capture points.</p>
                     </div>
                     <div>
                       <h4 className="mb-1 font-semibold text-foreground">Value flow</h4>
-                      <p>Build on the platform → deploy into turnarounds/newcos with compliance → prove value and capture rev‑share/SaaS/equity → harvest working patterns into the library → faster next build.</p>
+                      <p>Build on the platform → deploy into turnarounds/newcos with compliance → prove value and capture rev‑share/SaaS/equity → harvest working patterns into the library → faster next build. Cross‑pollination: research components (e.g., Vuplicity&apos;s deep research, compliance orchestration) become reusable digital employees for new domains.</p>
                     </div>
                     <div>
                       <h4 className="mb-1 font-semibold text-foreground">Compounding loops</h4>
                       <ul className="list-disc pl-5 space-y-1">
                         <li>Templates: each win adds reusable modules.</li>
                         <li>Compliance: HIL turns edge cases into rules; audit builds trust.</li>
-                        <li>GTM: content and CRO motions grow demand and deal flow.</li>
+                        <li>GTM: content and CRO motions (Creator of One) grow demand and deal flow; Sidekick brokers deals.</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="mb-1 font-semibold text-foreground">Divisions and strategy</h4>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li><strong>R&amp;D</strong>: research to build brand and capabilities (e.g., deep research system).</li>
+                        <li><strong>Prod</strong>: digital employees, full companies, and off‑the‑shelf products mixed with open‑source to retool opportunities.</li>
+                        <li><strong>MSP</strong>: ongoing technical support and product improvements; consultants at the edge.</li>
+                        <li>Strategies: AI‑first newcos; update outdated firms; partner to form new AI businesses; identify automation leads.</li>
                       </ul>
                     </div>
                   </div>
