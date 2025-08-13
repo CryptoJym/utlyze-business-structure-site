@@ -163,6 +163,9 @@ export default function UtilizeEcosystem() {
     return { nodes: layoutNodes, edges: layoutEdges };
   }, [showExamples, showEconomics]);
 
+  // Layout the CRA mini-map as well for cleaner spacing
+  const { nodes: craLayoutNodes, edges: craLayoutEdges } = layoutWithDagre(craNodes as AppNode[], craEdges as AppEdge[]);
+
   // ======= CANVAS++ DATA =======
   const canvas = {
     partners: ["Operator talent", "Capital partners", "Compliance advisors", "Open‑source communities", "Channel partners"],
@@ -386,13 +389,22 @@ export default function UtilizeEcosystem() {
                 <CardContent>
                   <div className="min-h-[320px] h-[55vh] sm:h-[520px] rounded-xl border">
                     <ReactFlow
-                      nodes={craNodes}
-                      edges={craEdges}
+                      nodes={craLayoutNodes}
+                      edges={craLayoutEdges}
                       fitView
+                      fitViewOptions={{ padding: 0.2 }}
+                      defaultEdgeOptions={{
+                        type: 'smoothstep',
+                        style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
+                        labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 13, fontWeight: 600 },
+                        labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
+                        labelBgPadding: [6, 3],
+                        labelBgBorderRadius: 6,
+                      }}
                     >
-                      <Background />
-                      <MiniMap pannable zoomable />
-                      <Controls />
+                      <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
+                      <MiniMap pannable zoomable style={{ height: 100, width: 160, borderRadius: 10, opacity: 0.9 }} />
+                      <Controls position="bottom-left" />
                     </ReactFlow>
                   </div>
                 </CardContent>
