@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, Position, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
+import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, Position, MarkerType, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
 import "reactflow/dist/style.css";
 import dagre from "dagre";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -254,6 +254,10 @@ export default function UtilizeEcosystem() {
                       edges={edges}
                       fitView
                       fitViewOptions={{ padding: 0.2 }}
+                      snapToGrid
+                      snapGrid={[16, 16]}
+                      minZoom={0.3}
+                      maxZoom={1.75}
                       defaultEdgeOptions={{
                         type: 'smoothstep',
                         style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
@@ -261,6 +265,7 @@ export default function UtilizeEcosystem() {
                         labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
                         labelBgPadding: [6, 3],
                         labelBgBorderRadius: 6,
+                        markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18 },
                       }}
                     >
                       <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
@@ -289,6 +294,21 @@ export default function UtilizeEcosystem() {
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <p className="leading-snug">Overlays appear as edge labels when &quot;Show economics&quot; is enabled.</p>
                     <p className="leading-snug">Examples include <strong>Vuplicity/Vooplicity</strong> (Agentic CRA) and <strong>Veiled Resin</strong> (marketing via Creator of One).</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Legend</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center gap-2"><span className="inline-block h-3 w-3 rounded" style={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} /> Center / Pillars</div>
+                    <div className="flex items-center gap-2"><span className="inline-block h-3 w-3 rounded" style={{ background: 'hsl(var(--muted))', border: '1px dashed hsl(var(--border))' }} /> Platform & Infra</div>
+                    <div className="flex items-center gap-2"><span className="inline-block h-3 w-3 rounded" style={{ background: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }} /> Enablers</div>
+                    <div className="flex items-center gap-2"><span className="inline-block h-3 w-3 rounded" style={{ background: 'hsl(var(--accent))', border: '1px solid hsl(var(--border))' }} /> Examples</div>
+                    <div className="flex items-center gap-2 col-span-2"><span className="inline-block h-3 w-3 rounded bg-foreground" /> Arrow indicates direction; dotted grid for spatial reference.</div>
                   </div>
                 </CardContent>
               </Card>
@@ -392,6 +412,8 @@ export default function UtilizeEcosystem() {
                       nodes={craLayoutNodes}
                       edges={craLayoutEdges}
                       fitView
+                      minZoom={0.4}
+                      maxZoom={1.75}
                       fitViewOptions={{ padding: 0.2 }}
                       defaultEdgeOptions={{
                         type: 'smoothstep',
@@ -400,6 +422,7 @@ export default function UtilizeEcosystem() {
                         labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
                         labelBgPadding: [6, 3],
                         labelBgBorderRadius: 6,
+                        markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18 },
                       }}
                     >
                       <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
