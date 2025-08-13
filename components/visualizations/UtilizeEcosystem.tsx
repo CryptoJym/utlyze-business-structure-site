@@ -207,10 +207,18 @@ export default function UtilizeEcosystem() {
                 </CardHeader>
                 <CardContent>
                   <div className="min-h-[360px] h-[60vh] sm:h-[560px] rounded-xl border">
-                    <ReactFlow nodes={nodes} edges={edges} fitView>
-                      <Background />
-                      <MiniMap pannable zoomable />
-                      <Controls />
+                    <ReactFlow
+                      nodes={nodes}
+                      edges={edges}
+                      fitView
+                      defaultEdgeOptions={{
+                        style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.6 },
+                        labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 12, fontWeight: 500 },
+                      }}
+                    >
+                      <Background color="hsl(var(--muted))" gap={24} size={1} />
+                      <MiniMap pannable zoomable style={{ height: 120, width: 180, borderRadius: 12, opacity: 0.9 }} />
+                      <Controls position="bottom-left" />
                     </ReactFlow>
                   </div>
                 </CardContent>
@@ -412,6 +420,7 @@ const exampleStyle = {
   padding: 8,
   border: "1px solid hsl(var(--border))",
   background: "hsl(var(--accent))",
+  color: "hsl(var(--foreground))",
   width: 220,
   textAlign: "center" as const,
   fontSize: 12,
