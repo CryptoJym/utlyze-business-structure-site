@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
+import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, Position, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
 import "reactflow/dist/style.css";
 import dagre from "dagre";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -54,13 +54,13 @@ export default function UtilizeEcosystem() {
 
   function layoutWithDagre(inputNodes: AppNode[], inputEdges: AppEdge[]) {
     const g = new dagre.graphlib.Graph();
-    g.setGraph({ rankdir: "LR", nodesep: 60, ranksep: 100, marginx: 40, marginy: 40 });
+    g.setGraph({ rankdir: "LR", nodesep: 120, ranksep: 180, marginx: 80, marginy: 60 });
     g.setDefaultEdgeLabel(() => ({}));
 
     const nodesById: Record<string, AppNode> = {};
     inputNodes.forEach((n) => {
-      const width = (typeof n.style?.width === "number" ? n.style?.width : 200) as number;
-      const height = 64;
+      const width = (typeof n.style?.width === "number" ? n.style?.width : 240) as number;
+      const height = 86;
       g.setNode(n.id, { width, height });
       nodesById[n.id] = n;
     });
@@ -74,12 +74,14 @@ export default function UtilizeEcosystem() {
     const nodes: AppNode[] = inputNodes.map((n) => {
       const dag = g.node(n.id);
       if (!dag) return n;
-      const width = (typeof n.style?.width === "number" ? n.style?.width : 200) as number;
-      const height = 64;
+      const width = (typeof n.style?.width === "number" ? n.style?.width : 240) as number;
+      const height = 86;
       return {
         ...n,
         position: { x: dag.x - width / 2, y: dag.y - height / 2 },
-      };
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+      } as AppNode;
     });
 
     const edges: AppEdge[] = inputEdges.map((e) => ({ ...e, type: "smoothstep" }));
@@ -248,6 +250,7 @@ export default function UtilizeEcosystem() {
                       nodes={nodes}
                       edges={edges}
                       fitView
+                      fitViewOptions={{ padding: 0.2 }}
                       defaultEdgeOptions={{
                         type: 'smoothstep',
                         style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
