@@ -249,6 +249,25 @@ export default function UtilizeEcosystem() {
                 </CardHeader>
                 <CardContent>
                   <FlowCanvas nodes={nodes} edges={edges} />
+                  <Separator className="my-4" />
+                  <div className="space-y-4 text-sm text-muted-foreground">
+                    <div>
+                      <h4 className="mb-1 font-semibold text-foreground">How it works</h4>
+                      <p>The center coordinates four pillars (Transformations, Products, Ventures, R&amp;D) that are built on a shared platform (orchestration, library, compliance). Enablers add leverage (OSS, operators, capital, data). Edges show direction of work/value; enable economics to see capture points.</p>
+                    </div>
+                    <div>
+                      <h4 className="mb-1 font-semibold text-foreground">Value flow</h4>
+                      <p>Build on the platform → deploy into turnarounds/newcos with compliance → prove value and capture rev‑share/SaaS/equity → harvest working patterns into the library → faster next build.</p>
+                    </div>
+                    <div>
+                      <h4 className="mb-1 font-semibold text-foreground">Compounding loops</h4>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Templates: each win adds reusable modules.</li>
+                        <li>Compliance: HIL turns edge cases into rules; audit builds trust.</li>
+                        <li>GTM: content and CRO motions grow demand and deal flow.</li>
+                      </ul>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
