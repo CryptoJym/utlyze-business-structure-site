@@ -1,7 +1,8 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
+import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
 import "reactflow/dist/style.css";
+import dagre from "dagre";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +51,41 @@ export default function UtilizeEcosystem() {
   // ======= ECOSYSTEM MAP =======
   type AppNode = FlowNode<{ label: string }>;
   type AppEdge = FlowEdge;
+
+  function layoutWithDagre(inputNodes: AppNode[], inputEdges: AppEdge[]) {
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({ rankdir: "LR", nodesep: 60, ranksep: 100, marginx: 40, marginy: 40 });
+    g.setDefaultEdgeLabel(() => ({}));
+
+    const nodesById: Record<string, AppNode> = {};
+    inputNodes.forEach((n) => {
+      const width = (typeof n.style?.width === "number" ? n.style?.width : 200) as number;
+      const height = 64;
+      g.setNode(n.id, { width, height });
+      nodesById[n.id] = n;
+    });
+
+    inputEdges.forEach((e) => {
+      if (e.source && e.target) g.setEdge(e.source, e.target);
+    });
+
+    dagre.layout(g);
+
+    const nodes: AppNode[] = inputNodes.map((n) => {
+      const dag = g.node(n.id);
+      if (!dag) return n;
+      const width = (typeof n.style?.width === "number" ? n.style?.width : 200) as number;
+      const height = 64;
+      return {
+        ...n,
+        position: { x: dag.x - width / 2, y: dag.y - height / 2 },
+      };
+    });
+
+    const edges: AppEdge[] = inputEdges.map((e) => ({ ...e, type: "smoothstep" }));
+
+    return { nodes, edges };
+  }
 
   const { nodes, edges } = useMemo(() => {
     const baseNodes: AppNode[] = [
@@ -121,7 +157,8 @@ export default function UtilizeEcosystem() {
 
     const allEdges = [...baseEdges, ...exampleEdges];
 
-    return { nodes: allNodes, edges: allEdges };
+    const { nodes: layoutNodes, edges: layoutEdges } = layoutWithDagre(allNodes, allEdges);
+    return { nodes: layoutNodes, edges: layoutEdges };
   }, [showExamples, showEconomics]);
 
   // ======= CANVAS++ DATA =======
@@ -212,11 +249,15 @@ export default function UtilizeEcosystem() {
                       edges={edges}
                       fitView
                       defaultEdgeOptions={{
-                        style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.6 },
-                        labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 12, fontWeight: 500 },
+                        type: 'smoothstep',
+                        style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
+                        labelStyle: { fill: 'hsl(var(--foreground))', fontSize: 13, fontWeight: 600 },
+                        labelBgStyle: { fill: 'hsl(var(--card))', fillOpacity: 0.92, stroke: 'hsl(var(--border))', strokeOpacity: 0.5 },
+                        labelBgPadding: [6, 3],
+                        labelBgBorderRadius: 6,
                       }}
                     >
-                      <Background color="hsl(var(--muted))" gap={24} size={1} />
+                      <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
                       <MiniMap pannable zoomable style={{ height: 120, width: 180, borderRadius: 12, opacity: 0.9 }} />
                       <Controls position="bottom-left" />
                     </ReactFlow>
