@@ -414,6 +414,8 @@ export default function UtilizeEcosystem() {
                       fitView
                       minZoom={0.4}
                       maxZoom={1.75}
+                      snapToGrid
+                      snapGrid={[16, 16]}
                       fitViewOptions={{ padding: 0.2 }}
                       defaultEdgeOptions={{
                         type: 'smoothstep',
@@ -426,7 +428,7 @@ export default function UtilizeEcosystem() {
                       }}
                     >
                       <Background color="hsl(var(--muted))" variant={BackgroundVariant.Dots} gap={24} size={1} />
-                      <MiniMap pannable zoomable style={{ height: 100, width: 160, borderRadius: 10, opacity: 0.9 }} />
+                      <MiniMap pannable zoomable style={{ height: 120, width: 180, borderRadius: 12, opacity: 0.9 }} />
                       <Controls position="bottom-left" />
                     </ReactFlow>
                   </div>
