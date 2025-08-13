@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
+/* Use HSL channel vars with hsl(var(--token)) everywhere for consistency */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* HSL channels used with hsl(var(--token)) */
-  --card: 0 0% 100%;
-  --muted: 0 0% 96%;
-  --accent: 210 40% 96%;
-  --border: 0 0% 90%;
-  --muted-foreground: 0 0% 40%;
+  --background: 0 0% 100%;           /* white */
+  --foreground: 222 47% 11%;         /* slate-900 */
+  --card: 0 0% 100%;                 /* white */
+  --muted: 210 20% 98%;              /* slate-50 */
+  --border: 214 15% 91%;             /* slate-200 */
+  --muted-foreground: 215 16% 47%;   /* slate-500 */
+  --accent: 215 90% 55%;             /* blue-600ish */
+  --accent-foreground: 0 0% 100%;    /* white */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
   --color-muted-foreground: hsl(var(--muted-foreground));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -21,18 +22,43 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: 0 0% 10%;
-    --muted: 0 0% 15%;
-    --accent: 210 35% 28%;
-    --border: 0 0% 20%;
-    --muted-foreground: 0 0% 72%;
+    --background: 222 22% 8%;        /* near-slate-950 */
+    --foreground: 210 17% 95%;       /* slate-100 */
+    --card: 222 14% 10%;             /* slate-900 */
+    --muted: 217 10% 18%;            /* slate-800 */
+    --border: 215 15% 28%;           /* slate-700 */
+    --muted-foreground: 210 16% 80%; /* slate-300 */
+    --accent: 215 90% 60%;           /* vivid blue */
+    --accent-foreground: 0 0% 100%;  /* white */
   }
 }
 
+/* Improve edge label legibility on charts */
+.react-flow__edge-text {
+  paint-order: stroke fill;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 3px;
+}
+.react-flow__edge-textbg {
+  fill: hsl(var(--card));
+  fill-opacity: 0.92;
+  stroke: hsl(var(--border));
+  stroke-opacity: 0.5;
+}
+
+/* Optional mermaid hardening if used */
+.mermaid .node rect, .mermaid .node circle, .mermaid .node polygon {
+  fill: hsl(var(--card));
+  stroke: hsl(var(--border));
+}
+.mermaid .node text { fill: hsl(var(--foreground)); }
+.mermaid .edgeLabel, .mermaid .label {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
