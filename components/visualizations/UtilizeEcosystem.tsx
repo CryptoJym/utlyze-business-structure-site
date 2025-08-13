@@ -569,6 +569,7 @@ function smallNode(width: number = 180): React.CSSProperties {
     padding: 8,
     border: "1px solid hsl(var(--border))",
     background: "hsl(var(--card))",
+    color: "#ffffff",
     width,
     textAlign: "center" as const,
     fontSize: 12,
