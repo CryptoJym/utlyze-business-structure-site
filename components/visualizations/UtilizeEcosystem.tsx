@@ -1,6 +1,6 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, Position, MarkerType, type Node as FlowNode, type Edge as FlowEdge } from "reactflow";
+import React, { useMemo, useRef, useState } from "react";
+import ReactFlow, { Background, Controls, MiniMap, BackgroundVariant, Position, MarkerType, type Node as FlowNode, type Edge as FlowEdge, type ReactFlowInstance } from "reactflow";
 import "reactflow/dist/style.css";
 import dagre from "dagre";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Rocket,
   Layers,
@@ -44,50 +46,61 @@ const SectionTitle = ({ icon: Icon, title, subtitle }: SectionTitleProps) => (
   </div>
 );
 
+// Generic Dagre layout helper to avoid hook dependency issues
+function layoutWithDagreGeneric(
+  inputNodes: FlowNode<{ label: string }>[],
+  inputEdges: FlowEdge[],
+  cfg: { nodesep: number; ranksep: number; marginx: number; marginy: number; baseWidth: number; baseHeight: number }
+) {
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({ rankdir: "LR", nodesep: cfg.nodesep, ranksep: cfg.ranksep, marginx: cfg.marginx, marginy: cfg.marginy });
+  g.setDefaultEdgeLabel(() => ({}));
+
+  inputNodes.forEach((n) => {
+    const width = (typeof n.style?.width === "number" ? n.style?.width : cfg.baseWidth) as number;
+    const height = cfg.baseHeight;
+    g.setNode(n.id, { width, height });
+  });
+
+  inputEdges.forEach((e) => {
+    if (e.source && e.target) g.setEdge(e.source, e.target);
+  });
+
+  dagre.layout(g);
+
+  const nodes: FlowNode<{ label: string }>[] = inputNodes.map((n) => {
+    const dag = g.node(n.id);
+    if (!dag) return n;
+    const width = (typeof n.style?.width === "number" ? n.style?.width : cfg.baseWidth) as number;
+    const height = cfg.baseHeight;
+    return {
+      ...n,
+      position: { x: dag.x - width / 2, y: dag.y - height / 2 },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
+    } as FlowNode<{ label: string }>;
+  });
+
+  const edges: FlowEdge[] = inputEdges.map((e) => ({ ...e, type: "smoothstep" }));
+
+  return { nodes, edges };
+}
+
 export default function UtilizeEcosystem() {
   const [showExamples, setShowExamples] = useState(true);
   const [showEconomics, setShowEconomics] = useState(true);
+  const [filterQuery, setFilterQuery] = useState("");
+  const [roomyLayout, setRoomyLayout] = useState(true);
+  const flowInstanceRef = useRef<ReactFlowInstance | null>(null);
 
   // ======= ECOSYSTEM MAP =======
   type AppNode = FlowNode<{ label: string }>;
   type AppEdge = FlowEdge;
 
-  function layoutWithDagre(inputNodes: AppNode[], inputEdges: AppEdge[]) {
-    const g = new dagre.graphlib.Graph();
-    g.setGraph({ rankdir: "LR", nodesep: 120, ranksep: 180, marginx: 80, marginy: 60 });
-    g.setDefaultEdgeLabel(() => ({}));
-
-    const nodesById: Record<string, AppNode> = {};
-    inputNodes.forEach((n) => {
-      const width = (typeof n.style?.width === "number" ? n.style?.width : 240) as number;
-      const height = 86;
-      g.setNode(n.id, { width, height });
-      nodesById[n.id] = n;
-    });
-
-    inputEdges.forEach((e) => {
-      if (e.source && e.target) g.setEdge(e.source, e.target);
-    });
-
-    dagre.layout(g);
-
-    const nodes: AppNode[] = inputNodes.map((n) => {
-      const dag = g.node(n.id);
-      if (!dag) return n;
-      const width = (typeof n.style?.width === "number" ? n.style?.width : 240) as number;
-      const height = 86;
-      return {
-        ...n,
-        position: { x: dag.x - width / 2, y: dag.y - height / 2 },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-      } as AppNode;
-    });
-
-    const edges: AppEdge[] = inputEdges.map((e) => ({ ...e, type: "smoothstep" }));
-
-    return { nodes, edges };
-  }
+  // spacing config
+  const spacingCfg = roomyLayout
+    ? { nodesep: 240, ranksep: 300, marginx: 160, marginy: 140, baseWidth: 320, baseHeight: 110 }
+    : { nodesep: 140, ranksep: 180, marginx: 90, marginy: 70, baseWidth: 260, baseHeight: 90 };
 
   const { nodes, edges } = useMemo(() => {
     const baseNodes: AppNode[] = [
@@ -165,12 +178,24 @@ export default function UtilizeEcosystem() {
 
     const allEdges = [...baseEdges, ...exampleEdges];
 
-    const { nodes: layoutNodes, edges: layoutEdges } = layoutWithDagre(allNodes, allEdges);
+    // Filter
+    const q = filterQuery.trim().toLowerCase();
+    const filteredNodes = q
+      ? allNodes.filter((n) => String(n.data?.label ?? n.id).toLowerCase().includes(q))
+      : allNodes;
+    const nodeIds = new Set(filteredNodes.map((n) => n.id));
+    const filteredEdges = allEdges.filter((e) => nodeIds.has(String(e.source)) && nodeIds.has(String(e.target)));
+
+    const { nodes: layoutNodes, edges: layoutEdges } = layoutWithDagreGeneric(filteredNodes, filteredEdges, spacingCfg);
     return { nodes: layoutNodes, edges: layoutEdges };
-  }, [showExamples, showEconomics]);
+  }, [showExamples, showEconomics, filterQuery, roomyLayout]);
 
   // Layout the CRA mini-map as well for cleaner spacing
-  const { nodes: craLayoutNodes, edges: craLayoutEdges } = layoutWithDagre(craNodes as AppNode[], craEdges as AppEdge[]);
+  const { nodes: craLayoutNodes, edges: craLayoutEdges } = layoutWithDagreGeneric(
+    (craNodes as FlowNode<{ label: string }>[]) as FlowNode<{ label: string }>[],
+    craEdges as FlowEdge[],
+    spacingCfg
+  );
 
   // ======= CANVAS++ DATA =======
   const canvas = {
@@ -235,6 +260,10 @@ export default function UtilizeEcosystem() {
               <Switch checked={showEconomics} onCheckedChange={setShowEconomics} id="economics" />
               <label htmlFor="economics" className="text-sm">Show economics</label>
             </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={roomyLayout} onCheckedChange={setRoomyLayout} id="roomy" />
+              <label htmlFor="roomy" className="text-sm">Roomy layout</label>
+            </div>
           </div>
         </header>
 
@@ -254,7 +283,23 @@ export default function UtilizeEcosystem() {
                   <CardTitle className="text-base">Interactive Ecosystem Map</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <FlowCanvas nodes={nodes} edges={edges} />
+                  <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={filterQuery}
+                        onChange={(e) => setFilterQuery(e.target.value)}
+                        placeholder="Filter nodes... (e.g., Vuplicity, Library)"
+                        className="w-full sm:w-[320px]"
+                      />
+                      {filterQuery && (
+                        <Button onClick={() => setFilterQuery("")}>Clear</Button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button onClick={() => flowInstanceRef.current?.fitView({ padding: 0.2 })}>Fit</Button>
+                    </div>
+                  </div>
+                  <FlowCanvas nodes={nodes} edges={edges} onInit={(inst) => (flowInstanceRef.current = inst)} />
                   <Separator className="my-4" />
                   <div className="space-y-4 text-sm text-muted-foreground">
                     <div>
@@ -447,8 +492,8 @@ export default function UtilizeEcosystem() {
 }
 
 // ======= Styles =======
-type FlowCanvasProps = { nodes: FlowNode<{ label: string }>[]; edges: FlowEdge[] };
-function FlowCanvas({ nodes, edges }: FlowCanvasProps) {
+type FlowCanvasProps = { nodes: FlowNode<{ label: string }>[]; edges: FlowEdge[]; onInit?: (inst: ReactFlowInstance) => void };
+function FlowCanvas({ nodes, edges, onInit }: FlowCanvasProps) {
   return (
     <div className="min-h-[360px] h-[60vh] sm:h-[560px] rounded-xl border">
       <ReactFlow
@@ -460,6 +505,7 @@ function FlowCanvas({ nodes, edges }: FlowCanvasProps) {
         snapGrid={[16, 16]}
         minZoom={0.3}
         maxZoom={1.75}
+        onInit={onInit}
         defaultEdgeOptions={{
           type: 'smoothstep',
           style: { stroke: 'hsl(var(--foreground))', strokeOpacity: 0.75, strokeWidth: 1.75 },
