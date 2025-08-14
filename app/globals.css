@@ -62,4 +62,28 @@ body {
   color: hsl(var(--foreground));
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   letter-spacing: 0.01em;
+  -webkit-tap-highlight-color: transparent; /* remove gray tap highlight */
+  touch-action: manipulation; /* improve click latency on mobile */
+}
+
+/* Smooth inertial scrolling on iOS */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide default scrollbar where we use overflow-x for tabs but keep it scrollable */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { scrollbar-width: none; }
+
+/* React Flow: larger handles/touch targets on small screens */
+@media (max-width: 640px) {
+  .react-flow__controls button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+  }
+  .react-flow__minimap {
+    width: 160px !important;
+    height: 110px !important;
+  }
 }

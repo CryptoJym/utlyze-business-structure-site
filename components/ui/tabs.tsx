@@ -5,7 +5,7 @@ import * as TabsPrimitive from "@radix-ui/react-tabs";
 export const Tabs = TabsPrimitive.Root;
 export const TabsList = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>>(
   ({ className, ...props }, ref) => (
-    <TabsPrimitive.List ref={ref} className={"inline-flex items-center rounded-xl bg-background/70 backdrop-blur border p-1 w-full overflow-x-auto gap-1 " + (className ?? "")} {...props} />
+    <TabsPrimitive.List ref={ref} className={"inline-flex items-center rounded-xl bg-background/70 backdrop-blur border p-1 w-full overflow-x-auto gap-1 scroll-smooth snap-x snap-mandatory scrollbar-none " + (className ?? "")} {...props} />
   )
 );
 TabsList.displayName = "TabsList";
@@ -15,7 +15,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, React.ComponentPr
     <TabsPrimitive.Trigger
       ref={ref}
       className={
-        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-foreground data-[state=active]:text-background border"
+        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-4 py-2 sm:px-3 sm:py-1.5 text-base sm:text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-foreground data-[state=active]:text-background border min-h-[44px]"
         + (className ? " " + className : "")
       }
       {...props}
